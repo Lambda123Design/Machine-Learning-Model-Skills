@@ -1,2 +1,2 @@
 # Machine-Learning-Model-Skills
-Details my skills on Machine Learning Models
+1. **Random Forst** - n_estimators, max_features,criterion
