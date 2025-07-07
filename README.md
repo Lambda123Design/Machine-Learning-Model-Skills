@@ -47,3 +47,7 @@ model_fpr, model_tpr, thresholds = roc_curve(y_test, model_prob)
 **Grid Search CV:**
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import GridSearchCV
+
+2. **AdaBoost**
+
+3. **Gradient Boosting:** Fk​(x)=F0​(x)+LR⋅PR1​(x)+LR⋅PR2​(x)+⋯+LR⋅PRk​(x)
