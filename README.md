@@ -216,7 +216,7 @@ y_pred=gnb.predict(X_test)
 
 print(confusion_matrix(y_pred,y_test)); print(accuracy_score(y_pred,y_test)); print(classification_report(y_pred,y_test))
 
-**7. k Nearest Neighbours - Classifier**
+**7. k Nearest Neighbours - Classifier and Regressor**
 
 By default n_neighbours=5
 
@@ -225,3 +225,25 @@ By default n_neighbours=5
 **Selecting the Type of kNN Method depends on Problem Statement**
 
 **Codes are just simple, refer the Notebook**
+
+**8. DBSCAN Clustering:**
+
+**Shows Dataset in Moon Format** - from sklearn.datasets import make_moons
+
+X,y=make_moons(n_samples=250,noise=0.05) **Noise is like Outliers**
+
+plt.scatter(X[:,0],X[:,1]) - **Scatter Plot for Dataset**
+
+### In DBSCAN we have "Epsilon" and using Epsilon, we will be able to get Clusters
+
+X_scaled=scaler.fit_transform(X)
+
+**Using DBSCAN with some epsilon values** - dbcan=DBSCAN(eps=0.3)
+
+dbcan.fit(X_scaled)
+
+dbcan.labels_ **Based on this datapoints it was able to categorize as two categories, 0 and 1**
+
+**Plotting in a Scatter Plot** - plt.scatter(X[:,0],X[:,1],c=dbcan.labels_)
+
+**We can later use Silhoutte Scoring to find optimum k-value**
