@@ -2,6 +2,8 @@
 
 ##### Very Important: Decision Tree doesn't require any kind of Standardization or Normalization. We can directly apply the Algorithm
 
+#### Always check for y.value_counts if it is an Imbalanced Dataset; Ensemble Models such as Random Forest, XGBoost,etc.. perform well in Imbalanced Datasets
+
 ****Supervised Learning:****
 **Linear Regression:**
 1. **Polynomial Regression** - degree, include_bias (from sklearn.preprocessing import PolynomialFeatures) (from sklearn.pipeline import Pipeline)
@@ -326,4 +328,58 @@ grid.best_params_
 
 print(r2_score(y_test,y_pred)); print(mean_absolute_error(y_test,y_pred)); print(mean_squared_error(y_test,y_pred))
 
+**10. Random Forest:**
 
+By defauly n_estimators=100
+
+#### Lot of Model codes are there; Learn from it; Notebook name "Holiday Package Prediction Project - Random Forest Classification"
+
+model_param = {}
+for name, model, params in randomcv_models:
+    random = RandomizedSearchCV(estimator=model,
+                                   param_distributions=params,
+                                   n_iter=100,
+                                   cv=3,
+                                   verbose=2,
+                                   n_jobs=-1)
+    random.fit(X_train, y_train)
+    model_param[name] = random.best_params_
+
+for model_name in model_param:
+    print(f"---------------- Best Params for {model_name} -------------------")
+    print(model_param[model_name])
+
+**Seeing ROC AUC Curve**
+
+## Plot ROC AUC Curve
+from sklearn.metrics import roc_auc_score,roc_curve
+plt.figure()
+
+# Add the models to the list that you want to view on the ROC plot
+auc_models = [
+{
+    'label': 'Random Forest Classifier',
+    'model': RandomForestClassifier(n_estimators=1000,min_samples_split=2,
+                                          max_features=7,max_depth=None),
+    'auc':  0.8325
+},
+    
+]
+# create loop through all model
+for algo in auc_models:
+    model = algo['model'] # select the model
+    model.fit(X_train, y_train) # train the model
+# Compute False postive rate, and True positive rate
+   ; fpr, tpr, thresholds = roc_curve(y_test, model.predict_proba(X_test)[:,1])
+# Calculate Area under the curve to display on the plot
+   ; plt.plot(fpr, tpr, label='%s ROC (area = %0.2f)' % (algo['label'], algo['auc']))
+# Custom settings for the plot 
+plt.plot([0, 1], [0, 1],'r--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('1-Specificity(False Positive Rate)')
+plt.ylabel('Sensitivity(True Positive Rate)')
+plt.title('Receiver Operating Characteristic')
+plt.legend(loc="lower right")
+plt.savefig("auc.png")
+plt.show() 
