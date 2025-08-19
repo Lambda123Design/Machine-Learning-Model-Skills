@@ -297,4 +297,33 @@ grid.best_params_
 
 grid.best_score_
 
+**Decision Tree Regression:**
+
+df_diabetes=pd.DataFrame(dataset.data,columns=['age',
+  'sex',
+  'bmi',
+  'bp',
+  's1',
+  's2',
+  's3',
+  's4',
+  's5',
+  's6'])
+df_diabetes.head()
+
+**HyperParameter Tuning** - param={
+    'criterion':['squared_error','friedman_mse','absolute_error'],
+    'splitter':['best','random'],
+    'max_depth':[1,2,3,4,5,10,15,20,25],
+    'max_features':['auto','sqrt','log2']
+}
+
+grid=GridSearchCV(regressor,param_grid=param,cv=5,scoring='neg_mean_squared_error')
+
+grid.best_params_
+
+**Predictions** - y_pred=grid.predict(X_test)
+
+print(r2_score(y_test,y_pred)); print(mean_absolute_error(y_test,y_pred)); print(mean_squared_error(y_test,y_pred))
+
 
