@@ -458,3 +458,219 @@ for name, model, params in randomcv_models:
 for model_name in model_param:
     print(f"---------------- Best Params for {model_name} -------------------")
     print(model_param[model_name])
+
+**AdaBoost got only 60% in AUC ROC Curve, because of this stump; Random Forest performed well when compared to this**
+
+**12. Gradient Boosting:**
+
+1. Defining Hyperparameters for Hyperparameter Training
+rf_params = {"max_depth": [5, 8, 15, None, 10],
+             "max_features": [5, 7, "auto", 8],
+             "min_samples_split": [2, 8, 15, 20],
+             "n_estimators": [100, 200, 500, 1000]}
+gradient_params={"loss": ['log_loss','deviance','exponential'],
+             "criterion": ['friedman_mse','squared_error','mse'],
+             "min_samples_split": [2, 8, 15, 20],
+             "n_estimators": [100, 200, 500],
+              "max_depth": [5, 8, 15, None, 10]
+                }
+
+**2. Seeing the Gradient Boost Parameters** - gradient_params
+
+3. Models for Hyperparameter Tuning:
+
+randomcv_models = [
+                   ("RF", RandomForestClassifier(), rf_params),
+    ("GradientBoost", GradientBoostingClassifier(), gradient_params)
+                   ]
+
+**4. Seeing the best params for the Models**
+
+model_param = {}
+for name, model, params in randomcv_models:
+    random = RandomizedSearchCV(estimator=model,
+                                   param_distributions=params,
+                                   n_iter=100,
+                                   cv=3,
+                                   verbose=2,
+                                   n_jobs=-1)
+    random.fit(X_train, y_train)
+    model_param[name] = random.best_params_
+
+for model_name in model_param:
+    print(f"---------------- Best Params for {model_name} -------------------")
+    print(model_param[model_name])
+
+5. Updating the parameters to train with the best parameters:
+
+models={
+    "Random Forest":RandomForestClassifier(n_estimators=1000,min_samples_split=2,
+                                          max_features=7,max_depth=None),
+    "GradientBoostclassifier":GradientBoostingClassifier(n_estimators=500,
+                                                        min_samples_split=20,
+                                                        max_depth=15,
+                                                        loss='exponential',
+                                                        criterion='mse')
+}
+
+**Then we viewed AUC ROC Curve too and Gradient Boosting was able to cover around 90%**
+
+**Gradient Boosting Regression:**
+
+1. Giving Hyperparameters to tune:
+
+rf_params = {"max_depth": [5, 8, 15, None, 10],
+             "max_features": [5, 7, "auto", 8],
+             "min_samples_split": [2, 8, 15, 20],
+             "n_estimators": [100, 200, 500, 1000]}
+
+gradient_params={"loss": ['squared_error','huber','absolute_error'],
+             "criterion": ['friedman_mse','squared_error','mse'],
+             "min_samples_split": [2, 8, 15, 20],
+             "n_estimators": [100, 200, 500],
+              "max_depth": [5, 8, 15, None, 10],
+            }
+
+2. Model List for Hyperparameter Tuning:
+
+randomcv_models = [
+                   ("RF", RandomForestRegressor(), rf_params),
+                   ("GradientBoost",GradientBoostingRegressor(),gradient_params)
+                   ]
+
+3. Performing HyperParameter Tuning:
+
+model_param = {}
+for name, model, params in randomcv_models:
+    random = RandomizedSearchCV(estimator=model,
+                                   param_distributions=params,
+                                   n_iter=100,
+                                   cv=3,
+                                   verbose=2,
+                                   n_jobs=-1)
+    random.fit(X_train, y_train)
+    model_param[name] = random.best_params_
+
+for model_name in model_param:
+    print(f"---------------- Best Params for {model_name} -------------------")
+    print(model_param[model_name])
+
+4. Retraining with Best Parameters:
+
+models = {
+    "Random Forest Regressor": RandomForestRegressor(n_estimators=100, min_samples_split=2, max_features='auto', max_depth=None, 
+                                                     n_jobs=-1),
+     "GradientBoost Regressor":GradientBoostingRegressor(n_estimators= 200,
+                                                         min_samples_split=8, max_depth=10, loss= 'huber', criterion='mse')
+    
+}
+
+**13. XGBoost**
+
+#### In all these Models learnings, Krishg= first trained Normally like this; Then only defined Parameters and did HyperParameter Tuning
+
+models={
+    "Logisitic Regression":LogisticRegression(),
+    "Decision Tree":DecisionTreeClassifier(),
+    "Random Forest":RandomForestClassifier(),
+    "Gradient Boost":GradientBoostingClassifier(),
+    "Adaboost":AdaBoostClassifier(),
+    "Xgboost":XGBClassifier()
+}
+for i in range(len(list(models))):
+    model = list(models.values())[i]
+    model.fit(X_train, y_train) # Train model
+    # Make predictions
+    y_train_pred = model.predict(X_train)
+    y_test_pred = model.predict(X_test
+    # Training set performance
+    model_train_accuracy = accuracy_score(y_train, y_train_pred) # Calculate Accuracy
+    model_train_f1 = f1_score(y_train, y_train_pred, average='weighted') # Calculate F1-score
+    model_train_precision = precision_score(y_train, y_train_pred) # Calculate Precision
+    model_train_recall = recall_score(y_train, y_train_pred) # Calculate Recall
+    model_train_rocauc_score = roc_auc_score(y_train, y_train_pred)
+    # Test set performance
+    model_test_accuracy = accuracy_score(y_test, y_test_pred) # Calculate Accuracy
+    model_test_f1 = f1_score(y_test, y_test_pred, average='weighted') # Calculate F1-score
+    model_test_precision = precision_score(y_test, y_test_pred) # Calculate Precision
+    model_test_recall = recall_score(y_test, y_test_pred) # Calculate Recall
+    model_test_rocauc_score = roc_auc_score(y_test, y_test_pred) #Calculate Roc
+    print(list(models.keys())[i]
+    print('Model performance for Training set')
+    print("- Accuracy: {:.4f}".format(model_train_accuracy))
+    print('- F1 score: {:.4f}'.format(model_train_f1))
+    print('- Precision: {:.4f}'.format(model_train_precision))
+    print('- Recall: {:.4f}'.format(model_train_recall))
+    print('- Roc Auc Score: {:.4f}'.format(model_train_rocauc_score))
+    print('----------------------------------')
+    print('Model performance for Test set')
+    print('- Accuracy: {:.4f}'.format(model_test_accuracy))
+    print('- F1 score: {:.4f}'.format(model_test_f1))
+    print('- Precision: {:.4f}'.format(model_test_precision))
+    print('- Recall: {:.4f}'.format(model_test_recall))
+    print('- Roc Auc Score: {:.4f}'.format(model_test_rocauc_score)
+    print('='*35)
+    print('\n')
+
+**1. Defining Parameters**
+
+## Hyperparameter Training
+rf_params = {"max_depth": [5, 8, 15, None, 10],
+             "max_features": [5, 7, "auto", 8],
+             "min_samples_split": [2, 8, 15, 20],
+             "n_estimators": [100, 200, 500, 1000]}
+xgboost_params = {"learning_rate": [0.1, 0.01],
+                  "max_depth": [5, 8, 12, 20, 30],
+                  "n_estimators": [100, 200, 300],
+                  "colsample_bytree": [0.5, 0.8, 1, 0.3, 0.4]}
+
+2. Seeing the Parameters - xgboost_params
+
+3. Model List for HyperParameter Tuning:
+
+randomcv_models = [
+                   ("RF", RandomForestClassifier(), rf_params),
+    ("Xgboost", XGBClassifier(), xgboost_params)
+                   ]
+
+**4. Performing RandomSearchCV with HyperParameter Tuning:**
+
+model_param = {}
+for name, model, params in randomcv_models:
+    random = RandomizedSearchCV(estimator=model,
+                                   param_distributions=params,
+                                   n_iter=100,
+                                   cv=3,
+                                   verbose=2,
+                                   n_jobs=-1)
+    random.fit(X_train, y_train)
+    model_param[name] = random.best_params_
+
+for model_name in model_param:
+    print(f"---------------- Best Params for {model_name} -------------------")
+    print(model_param[model_name])
+
+**5. Training with Best HyperParameters:**
+
+models={
+    "Random Forest":RandomForestClassifier(n_estimators=1000,min_samples_split=2,
+                                          max_features=7,max_depth=None),
+    "Xgboost":XGBClassifier(n_estimators=200,max_depth=12,learning_rate=0.1,
+                           colsample_bytree=1)
+}
+
+**6. Plotting ROC AUC Curver:**
+
+auc_models = [
+{
+    'label': 'Xgboost',
+    'model':XGBClassifier(n_estimators=200,max_depth=12,learning_rate=0.1,
+                           colsample_bytree=1),
+    'auc':  0.8882
+}
+
+**XG Boost covered 89%**
+
+**Similar Codes for XGBoost Regressor Too, Refer Notebook**
+                   
+         
