@@ -1,5 +1,7 @@
 # Machine-Learning-Model-Skills
 
+##### Very Important: Decision Tree doesn't require any kind of Standardization or Normalization. We can directly apply the Algorithm
+
 ****Supervised Learning:****
 **Linear Regression:**
 1. **Polynomial Regression** - degree, include_bias (from sklearn.preprocessing import PolynomialFeatures) (from sklearn.pipeline import Pipeline)
@@ -247,3 +249,52 @@ dbcan.labels_ **Based on this datapoints it was able to categorize as two catego
 **Plotting in a Scatter Plot** - plt.scatter(X[:,0],X[:,1],c=dbcan.labels_)
 
 **We can later use Silhoutte Scoring to find optimum k-value**
+
+**9. Decision Tree**
+
+treeclassifier=DecisionTreeClassifier()
+
+##### Very Important: Decision Tree doesn't require any kind of Standardization or Normalization. We can directly apply the algorithm
+
+treeclassifier.fit(X_train,y_train)
+
+### Visualizing the Decision Tree
+
+from sklearn import tree
+
+plt.figure(figsize=(15,10))
+
+tree.plot_tree(treeclassifier,filled=True)
+
+### If Gini=0, then it becomes a Leaf Node; Becomes a Pure Split; Anything Gini Near to 0.5, then it is Impure Split
+
+### We may be getting Overfitting here; We can avoid Overfitting using: Pre-Prunning or Post-Prunning
+
+### In Post-Pruning, if one category is much higher others, we can conclude that it is final [0,33,1], we can conclude it is the second which is the final category (Small Number won't play a greater role there)
+
+### In Pre-Prunning, we will play with, Max-Depth, Gini or Entropy, Max Features; This is just like Hyper-Parameter Tuning
+
+#### Post-Pruning always good for Smaller Datasets; Because if large dataset, we need to construct entire dataset, it takes more time; So do post-pruning for small datasets
+
+#### Use Pre-Pruning for Large Datasets
+
+#### Pre-Prunning and HyperParameter Tuning:
+
+param={
+    'criterion':['gini','entropy', 'log_loss'],
+    'splitter':['best','random'],
+    'max_depth':[1,2,3,4,5],
+    'max_features':['auto','sqrt','log2']
+}
+
+from sklearn.model_selection import GridSearchCV
+
+treemodel=DecisionTreeClassifier()
+
+grid=GridSearchCV(treeclassifier,param_grid=param,cv=5,scoring='accuracy')
+
+grid.best_params_
+
+grid.best_score_
+
+
