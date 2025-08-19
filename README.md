@@ -1,8 +1,10 @@
 # Machine-Learning-Model-Skills
 
-##### Very Important: Decision Tree doesn't require any kind of Standardization or Normalization. We can directly apply the Algorithm
+##### Very Important: Decision Tree doesn't require any kind of Standardization or Normalization. We can directly apply the Algorithm; Ensemble Techniques no need that
 
 #### Always check for y.value_counts if it is an Imbalanced Dataset; Ensemble Models such as Random Forest, XGBoost,etc.. perform well in Imbalanced Datasets
+
+#### Random Forest Works better than AdaBoost, because AdaBoost works on the concept of Stumps
 
 ****Supervised Learning:****
 **Linear Regression:**
@@ -383,3 +385,76 @@ plt.title('Receiver Operating Characteristic')
 plt.legend(loc="lower right")
 plt.savefig("auc.png")
 plt.show() 
+
+**11. AdaBoost**
+
+from sklearn.ensemble import AdaBoostClassifier
+
+adaboost_param={
+    "n_estimators":[50,60,70,80,90],
+    "algorithm":['SAMME','SAMME.R']
+}
+
+**'SAMME','SAMME.R'** - For Boosting
+
+HyperParameter Tuning:
+
+Models list for Hyperparameter tuning
+randomcv_models = [
+                   ("RF", RandomForestClassifier(), rf_params),
+    ("AB", AdaBoostClassifier(), adaboost_param)
+
+
+#### Once you got the Best Models, Copy Paste here
+
+models={
+    "Random Forest":RandomForestClassifier(n_estimators=1000,min_samples_split=2,
+                                          max_features=7,max_depth=None),
+    "Adaboost":AdaBoostClassifier(n_estimators=80, algorithm='SAMME')
+}           ]
+
+#### We can also use a Pipeline, but this way of doing is better
+
+models = {
+    "Linear Regression": LinearRegression(),
+    "Lasso": Lasso(),
+    "Ridge": Ridge(),
+    "K-Neighbors Regressor": KNeighborsRegressor(),
+    "Decision Tree": DecisionTreeRegressor(),
+    "Random Forest Regressor": RandomForestRegressor(),
+    "Adaboost Regressor":AdaBoostRegressor()
+
+}
+
+**AdaBoost Regression:**
+
+ada_params={
+    "n_estimators":[50,60,70,80],
+    "loss":['linear','square','exponential']
+}
+
+**Model List for HyperParameter Tuning:**
+
+randomcv_models = [('KNN', KNeighborsRegressor(), knn_params),
+                   ("RF", RandomForestRegressor(), rf_params),
+                   ("Adaboost",AdaBoostRegressor(),ada_params)                   ]
+
+
+**Perform HyperParameter Tuning**
+
+from sklearn.model_selection import RandomizedSearchCV
+
+model_param = {}
+for name, model, params in randomcv_models:
+    random = RandomizedSearchCV(estimator=model,
+                                   param_distributions=params,
+                                   n_iter=100,
+                                   cv=3,
+                                   verbose=2,
+                                   n_jobs=-1)
+    random.fit(X_train, y_train)
+    model_param[name] = random.best_params_
+
+for model_name in model_param:
+    print(f"---------------- Best Params for {model_name} -------------------")
+    print(model_param[model_name])
