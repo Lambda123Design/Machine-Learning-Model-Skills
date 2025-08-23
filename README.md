@@ -2,6 +2,10 @@
 
 ##### Very Important: Decision Tree doesn't require any kind of Standardization or Normalization. We can directly apply the Algorithm; Ensemble Techniques no need that
 
+#### For Linear Regression use Standardization, as the Gradient Descent can converge faster
+
+#### For Distance based models, use Standardization
+
 #### Always check for y.value_counts if it is an Imbalanced Dataset; Ensemble Models such as Random Forest, XGBoost,etc.. perform well in Imbalanced Datasets
 
 #### Random Forest Works better than AdaBoost, because AdaBoost works on the concept of Stumps
